@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Droppii Team Hub - Bảng Điều Khiển Chiến Lược</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony -->
+    <!-- Application Structure Plan: A single-page dashboard with thematic sections (Overview, Personas, Gamification, CES Metric, Business Model, Risks/Roadmap). This structure allows stakeholders to quickly grasp the high-level strategy and then interactively dive into specific components like the CES calculator or the gamification tiers. It prioritizes exploration and understanding over the linear format of the original report. -->
+    <!-- Visualization & Content Choices: Report Info: Target Audience -> Goal: Compare -> Viz: Two-column persona cards -> Interaction: Hover for details -> Justification: Clearly separates the two distinct user groups. | Report Info: CES Formula -> Goal: Explain & Explore -> Viz: Interactive sliders + Chart.js Donut Chart -> Interaction: User manipulates sliders to see live CES calculation -> Justification: Makes an abstract formula tangible and demonstrates its utility. | Report Info: Gamification Tiers -> Goal: Organize -> Viz: 3-card layout -> Interaction: Click to expand -> Justification: Breaks down a complex system into digestible, parallel parts. | Report Info: Risks -> Goal: Organize -> Viz: Accordion component -> Interaction: Click to reveal -> Justification: Presents dense information cleanly without overwhelming the user. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #333;
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #F5A623;
+            border-bottom-color: #F5A623;
+        }
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary {
+            background-color: #F5A623;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #d9901a;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 300px;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header & Navigation -->
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold text-gray-800">
+                <span class="text-[#F5A623]">Droppii</span> Team Hub
+            </h1>
+            <div class="hidden md:flex space-x-8">
+                <a href="#overview" class="nav-link font-medium">Tổng Quan</a>
+                <a href="#personas" class="nav-link font-medium">Đối Tượng</a>
+                <a href="#gamification" class="nav-link font-medium">Game Hóa</a>
+                <a href="#ces" class="nav-link font-medium">Chỉ Số CES</a>
+                <a href="#model" class="nav-link font-medium">Mô Hình</a>
+                <a href="#roadmap" class="nav-link font-medium">Lộ Trình</a>
+            </div>
+            <div class="md:hidden">
+                <button id="menu-btn" class="text-gray-700 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
+            <a href="#overview" class="block py-2 text-center nav-link">Tổng Quan</a>
+            <a href="#personas" class="block py-2 text-center nav-link">Đối Tượng</a>
+            <a href="#gamification" class="block py-2 text-center nav-link">Game Hóa</a>
+            <a href="#ces" class="block py-2 text-center nav-link">Chỉ Số CES</a>
+            <a href="#model" class="block py-2 text-center nav-link">Mô Hình</a>
+            <a href="#roadmap" class="block py-2 text-center nav-link">Lộ Trình</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+
+        <!-- Section 1: Overview -->
+        <section id="overview" class="text-center mb-24">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800 mb-4">Cỗ Máy Tăng Trưởng Hiệu Suất Nội Bộ</h2>
+            <p class="max-w-3xl mx-auto text-gray-600 text-lg mb-12">
+                Droppii Team Hub không phải là một sản phẩm, mà là một khoản đầu tư chiến lược của Mentor. Nền tảng này giải quyết các "nỗi đau" cốt lõi: tỷ lệ rời bỏ cao, tốc độ đạt hiệu suất chậm và thiếu công cụ tạo động lực, nhằm tối ưu hóa ROI cho Mentor và thúc đẩy thu nhập cho thành viên.
+            </p>
+            <div class="card p-8 max-w-4xl mx-auto">
+                <h3 class="font-bold text-xl mb-6">Vòng Lặp Giá Trị</h3>
+                <div class="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0 md:space-x-4">
+                    <div class="text-center">
+                        <div class="bg-orange-100 text-orange-500 rounded-full w-20 h-20 flex items-center justify-center mx-auto text-3xl font-bold">💰</div>
+                        <p class="mt-2 font-semibold">Mentor Đầu Tư</p>
+                    </div>
+                    <div class="text-gray-400 text-4xl font-light transform rotate-90 md:rotate-0">→</div>
+                    <div class="text-center">
+                        <div class="bg-blue-100 text-blue-500 rounded-full w-20 h-20 flex items-center justify-center mx-auto text-3xl font-bold">🚀</div>
+                        <p class="mt-2 font-semibold">Hub Thúc Đẩy</p>
+                    </div>
+                    <div class="text-gray-400 text-4xl font-light transform rotate-90 md:rotate-0">→</div>
+                    <div class="text-center">
+                        <div class="bg-green-100 text-green-500 rounded-full w-20 h-20 flex items-center justify-center mx-auto text-3xl font-bold">📈</div>
+                        <p class="mt-2 font-semibold">Hiệu Suất Tăng</p>
+                    </div>
+                    <div class="text-gray-400 text-4xl font-light transform rotate-90 md:rotate-0">→</div>
+                    <div class="text-center">
+                        <div class="bg-purple-100 text-purple-500 rounded-full w-20 h-20 flex items-center justify-center mx-auto text-3xl font-bold">🏆</div>
+                        <p class="mt-2 font-semibold">Tối Ưu ROI</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Personas -->
+        <section id="personas" class="mb-24">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800 text-center mb-4">Chân Dung Hai Đối Tượng Vàng</h2>
+            <p class="max-w-3xl mx-auto text-gray-600 text-center mb-12">Hiểu rõ nhu cầu và tâm lý của Mentor và Thành viên là chìa khóa để xây dựng một nền tảng thực sự giá trị.</p>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="card p-8">
+                    <h3 class="text-2xl font-bold mb-4">Mentor (Nhà Đầu Tư)</h3>
+                    <p class="text-gray-600 mb-6">Nhà lãnh đạo, nhà xây dựng hệ thống, tập trung vào tăng trưởng bền vững và hiệu quả quản lý.</p>
+                    <ul class="space-y-3 text-gray-700">
+                        <li class="flex items-center"><span class="text-xl mr-3">🎯</span> Tư duy chiến lược, hướng đến ROI.</li>
+                        <li class="flex items-center"><span class="text-xl mr-3">📊</span> Mong muốn quản lý dựa trên dữ liệu.</li>
+                        <li class="flex items-center"><span class="text-xl mr-3">🛠️</span> Sẵn sàng đầu tư vào công cụ tạo đòn bẩy.</li>
+                        <li class="flex items-center"><span class="text-xl mr-3">🏆</span> Giá trị cốt lõi: Hiệu quả & Sự thành công của đội nhóm.</li>
+                    </ul>
+                </div>
+                <div class="card p-8">
+                    <h3 class="text-2xl font-bold mb-4">Thành Viên (Người Dùng)</h3>
+                    <p class="text-gray-600 mb-6">Những cá nhân có mục tiêu nhưng đôi khi thiếu phương hướng, cần một lộ trình rõ ràng và sự công nhận.</p>
+                    <ul class="space-y-3 text-gray-700">
+                        <li class="flex items-center"><span class="text-xl mr-3">🧭</span> Cần một quy trình có cấu trúc, dễ đi theo.</li>
+                        <li class="flex items-center"><span class="text-xl mr-3">💡</span> Được thúc đẩy bởi mục tiêu rõ ràng và sự công nhận.</li>
+                        <li class="flex items-center"><span class="text-xl mr-3">🤝</span> Tìm kiếm sự hỗ trợ từ cộng đồng.</li>
+                        <li class="flex items-center"><span class="text-xl mr-3">💸</span> Giá trị cốt lõi: Tăng thu nhập & Cảm giác thành tựu.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Gamification -->
+        <section id="gamification" class="mb-24">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800 text-center mb-4">Giải Mã "Game Hóa"</h2>
+            <p class="max-w-3xl mx-auto text-gray-600 text-center mb-12">Chúng tôi xây dựng một Hệ Thống Cạnh Tranh Đa Tầng để thúc đẩy cạnh tranh lành mạnh, tạo động lực cho tất cả mọi người thay vì gây nản lòng.</p>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="card p-8 text-center">
+                    <div class="text-5xl mb-4">🥇</div>
+                    <h3 class="text-xl font-bold mb-2">Tầng 1: Vượt Ngưỡng Bản Thân</h3>
+                    <p class="text-gray-600">Cạnh tranh với chính mình của ngày hôm qua. Xây dựng sự tự tin từ bên trong và nuôi dưỡng thói quen chiến thắng.</p>
+                </div>
+                <div class="card p-8 text-center">
+                    <div class="text-5xl mb-4">🧑‍🤝‍🧑</div>
+                    <h3 class="text-xl font-bold mb-2">Tầng 2: Đua Top Nhóm Nhỏ</h3>
+                    <p class="text-gray-600">Tạo các "giải đấu" nhỏ hàng tuần cho các nhóm có hiệu suất tương đương. Tạo cảm giác "mình có cơ hội".</p>
+                </div>
+                <div class="card p-8 text-center">
+                    <div class="text-5xl mb-4">👑</div>
+                    <h3 class="text-xl font-bold mb-2">Tầng 3: Đấu Trường Danh Vọng</h3>
+                    <p class="text-gray-600">Vinh danh các "chiến thần" xuất sắc nhất. Tạo ra khát khao và hình mẫu lý tưởng để mọi người noi theo.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: CES -->
+        <section id="ces" class="mb-24">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800 text-center mb-4">Chỉ Số "Chén Thánh": Điểm CES</h2>
+            <p class="max-w-3xl mx-auto text-gray-600 text-center mb-12">Thay vì nhìn vào kết quả, chúng ta đo lường hành vi. Điểm Tương Tác Cam Kết (CES) là chỉ số dẫn dắt, giúp dự báo hiệu suất tương lai và là tín hiệu sớm để Mentor can thiệp.</p>
+            <div class="card p-8">
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <h3 class="text-xl font-bold mb-6">Mô Phỏng Tính Điểm CES</h3>
+                        <div class="space-y-6">
+                            <div>
+                                <label for="login-slider" class="font-medium">Số ngày đăng nhập/tuần: <span id="login-value" class="font-bold text-orange-500">4</span></label>
+                                <input id="login-slider" type="range" min="0" max="7" value="4" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                            </div>
+                            <div>
+                                <label for="habit-slider" class="font-medium">Tỷ lệ hoàn thành thói quen: <span id="habit-value" class="font-bold text-orange-500">60</span>%</label>
+                                <input id="habit-slider" type="range" min="0" max="100" value="60" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                            </div>
+                            <div>
+                                <label for="social-slider" class="font-medium">Số lần tương tác xã hội/tuần: <span id="social-value" class="font-bold text-orange-500">5</span></label>
+                                <input id="social-slider" type="range" min="0" max="20" value="5" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div class="chart-container">
+                            <canvas id="cesChart"></canvas>
+                        </div>
+                        <p class="mt-4 text-lg font-semibold">Đánh giá: <span id="ces-evaluation" class="font-bold text-blue-600"></span></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Business Model -->
+        <section id="model" class="mb-24">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800 text-center mb-4">Mô Hình "Nhượng Quyền Kỹ Thuật Số"</h2>
+            <p class="max-w-3xl mx-auto text-gray-600 text-center mb-12">Chúng tôi không chỉ bán phần mềm, chúng tôi cung cấp một giải pháp "chìa khóa trao tay" để đảm bảo thành công cho Mentor và đội nhóm.</p>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="card p-8">
+                    <div class="text-4xl mb-4">🖥️</div>
+                    <h3 class="text-2xl font-bold mb-2">Tài khoản Hub (SaaS)</h3>
+                    <p class="text-gray-600">Quyền truy cập vào nền tảng với đầy đủ tính năng, chi phí linh hoạt theo số lượng người dùng.</p>
+                </div>
+                <div class="card p-8">
+                    <div class="text-4xl mb-4">🚀</div>
+                    <h3 class="text-2xl font-bold mb-2">Gói Triển Khai Cấp Tốc</h3>
+                    <p class="text-gray-600">Một khoản phí thiết lập ban đầu để nhận bộ công cụ và sự hỗ trợ 1-1, đảm bảo ra mắt Hub thành công.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 6: Risks & Roadmap -->
+        <section id="roadmap" class="mb-24">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800 text-center mb-4">Rủi Ro & Lộ Trình Hành Động</h2>
+            <p class="max-w-3xl mx-auto text-gray-600 text-center mb-12">Một kế hoạch rõ ràng để quản trị rủi ro và phát triển nền tảng theo từng giai đoạn, tối ưu hóa nguồn lực và đảm bảo sự tăng trưởng bền vững.</p>
+            <div class="grid md:grid-cols-2 gap-12">
+                <div>
+                    <h3 class="text-2xl font-bold mb-6 text-center md:text-left">Quản Trị Rủi Ro</h3>
+                    <div id="accordion" class="space-y-3">
+                        <div class="bg-white rounded-lg shadow-sm">
+                            <button class="accordion-header w-full flex justify-between items-center p-4 font-semibold text-left">
+                                <span>Rủi ro Vận hành</span>
+                                <span class="accordion-icon text-xl">+</span>
+                            </button>
+                            <div class="accordion-content px-4 pb-4 text-gray-600">
+                                <p><strong>Rủi ro:</strong> Dữ liệu không đồng bộ chính xác với hệ thống Droppii.</p>
+                                <p><strong>Giảm thiểu:</strong> Xây dựng API mạnh mẽ, cơ chế đối soát định kỳ, kênh hỗ trợ kỹ thuật nhanh.</p>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-sm">
+                            <button class="accordion-header w-full flex justify-between items-center p-4 font-semibold text-left">
+                                <span>Rủi ro Thị trường</span>
+                                <span class="accordion-icon text-xl">+</span>
+                            </button>
+                            <div class="accordion-content px-4 pb-4 text-gray-600">
+                                <p><strong>Rủi ro:</strong> Thành viên không sử dụng nền tảng.</p>
+                                <p><strong>Giảm thiểu:</strong> Tập trung vào UX/UI đơn giản, Mentor tiên phong, truyền thông nội bộ mạnh mẽ.</p>
+                            </div>
+                        </div>
+                         <div class="bg-white rounded-lg shadow-sm">
+                            <button class="accordion-header w-full flex justify-between items-center p-4 font-semibold text-left">
+                                <span>Rủi ro Tài chính</span>
+                                <span class="accordion-icon text-xl">+</span>
+                            </button>
+                            <div class="accordion-content px-4 pb-4 text-gray-600">
+                                <p><strong>Rủi ro:</strong> Chi phí đầu tư không mang lại ROI dương.</p>
+                                <p><strong>Giảm thiểu:</strong> Bắt đầu với MVP, tập trung vào các tính năng có tác động lớn nhất đến doanh số.</p>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-sm">
+                            <button class="accordion-header w-full flex justify-between items-center p-4 font-semibold text-left">
+                                <span>Rủi ro Pháp lý</span>
+                                <span class="accordion-icon text-xl">+</span>
+                            </button>
+                            <div class="accordion-content px-4 pb-4 text-gray-600">
+                                <p><strong>Rủi ro:</strong> Bị hiểu nhầm là công cụ đảm bảo thu nhập, vấn đề bảo mật dữ liệu.</p>
+                                <p><strong>Giảm thiểu:</strong> Truyền thông rõ ràng, xây dựng điều khoản sử dụng, tuân thủ quy định bảo vệ dữ liệu.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold mb-6 text-center md:text-left">Lộ Trình Phát Triển</h3>
+                    <div class="relative border-l-2 border-orange-200 pl-8 space-y-12">
+                        <div class="relative">
+                            <div class="absolute -left-10 top-1 w-5 h-5 bg-orange-400 rounded-full border-4 border-white"></div>
+                            <h4 class="font-bold">Giai đoạn 1: MVP & Thử nghiệm (3 tháng)</h4>
+                            <p class="text-gray-600">Xây dựng tính năng cốt lõi (Dashboard, Habit Tracker, Leaderboard) và thử nghiệm với 1-2 đội nhóm.</p>
+                        </div>
+                        <div class="relative">
+                            <div class="absolute -left-10 top-1 w-5 h-5 bg-orange-400 rounded-full border-4 border-white"></div>
+                            <h4 class="font-bold">Giai đoạn 2: Mở rộng & Tối ưu hóa (6 tháng)</h4>
+                            <p class="text-gray-600">Bổ sung tính năng nâng cao (Huy hiệu, Thư viện, Đặt mục tiêu) và mở rộng cho các Mentor khác.</p>
+                        </div>
+                        <div class="relative">
+                            <div class="absolute -left-10 top-1 w-5 h-5 bg-orange-400 rounded-full border-4 border-white"></div>
+                            <h4 class="font-bold">Giai đoạn 3: Hướng tới Hệ sinh thái (Dài hạn)</h4>
+                            <p class="text-gray-600">Tích hợp sâu hơn với Droppii, phân tích dữ liệu lớn để đưa ra gợi ý thông minh.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-800 text-white mt-16">
+        <div class="container mx-auto px-6 py-8 text-center">
+            <p>&copy; 2025 Droppii Team Hub Strategic Plan. All rights reserved.</p>
+            <p class="text-sm text-gray-400 mt-2">An Interactive Application for Strategic Exploration.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Mobile Menu
+            const menuBtn = document.getElementById('menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            menuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // Accordion
+            const accordionHeaders = document.querySelectorAll('.accordion-header');
+            accordionHeaders.forEach(header => {
+                header.addEventListener('click', () => {
+                    const content = header.nextElementSibling;
+                    const icon = header.querySelector('.accordion-icon');
+                    
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                        icon.textContent = '+';
+                    } else {
+                        document.querySelectorAll('.accordion-content').forEach(c => c.style.maxHeight = null);
+                        document.querySelectorAll('.accordion-icon').forEach(i => i.textContent = '+');
+                        content.style.maxHeight = content.scrollHeight + "px";
+                        icon.textContent = '-';
+                    }
+                });
+            });
+
+            // CES Chart
+            const loginSlider = document.getElementById('login-slider');
+            const habitSlider = document.getElementById('habit-slider');
+            const socialSlider = document.getElementById('social-slider');
+            const loginValue = document.getElementById('login-value');
+            const habitValue = document.getElementById('habit-value');
+            const socialValue = document.getElementById('social-value');
+            const cesEvaluation = document.getElementById('ces-evaluation');
+            const ctx = document.getElementById('cesChart').getContext('2d');
+
+            let cesChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Điểm CES', 'Cần đạt'],
+                    datasets: [{
+                        data: [50, 50],
+                        backgroundColor: ['#4A90E2', '#EAEAEA'],
+                        borderWidth: 0,
+                        circumference: 360,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false }
+                    }
+                }
+            });
+
+            function calculateCES() {
+                const login = parseInt(loginSlider.value);
+                const habit = parseInt(habitSlider.value);
+                const social = parseInt(socialSlider.value);
+
+                loginValue.textContent = login;
+                habitValue.textContent = habit;
+                socialValue.textContent = social;
+
+                // Normalize values for calculation
+                const loginScore = (login / 7) * 100;
+                const habitScore = habit;
+                const socialScore = (social / 20) * 100;
+
+                const ces = (loginScore * 0.4) + (habitScore * 0.4) + (socialScore * 0.2);
+                
+                updateChart(ces);
+                updateEvaluation(ces);
+            }
+
+            function updateChart(ces) {
+                cesChart.data.datasets[0].data[0] = ces;
+                cesChart.data.datasets[0].data[1] = 100 - ces;
+                
+                if (ces < 40) {
+                    cesChart.data.datasets[0].backgroundColor[0] = '#EF4444'; // red-500
+                } else if (ces < 70) {
+                    cesChart.data.datasets[0].backgroundColor[0] = '#F59E0B'; // amber-500
+                } else {
+                    cesChart.data.datasets[0].backgroundColor[0] = '#10B981'; // emerald-500
+                }
+                
+                cesChart.update();
+            }
+            
+            function updateEvaluation(ces) {
+                 if (ces < 40) {
+                    cesEvaluation.textContent = 'Rủi ro cao';
+                    cesEvaluation.className = 'font-bold text-red-600';
+                } else if (ces < 70) {
+                    cesEvaluation.textContent = 'Cần cải thiện';
+                    cesEvaluation.className = 'font-bold text-amber-600';
+                } else {
+                    cesEvaluation.textContent = 'Cam kết tốt';
+                    cesEvaluation.className = 'font-bold text-emerald-600';
+                }
+            }
+
+            loginSlider.addEventListener('input', calculateCES);
+            habitSlider.addEventListener('input', calculateCES);
+            socialSlider.addEventListener('input', calculateCES);
+
+            calculateCES(); // Initial calculation
+        });
+    </script>
+</body>
+</html>
