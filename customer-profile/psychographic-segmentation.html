@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Droppii Team Hub: Bảng Phân Tích Tương Tác</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Supportive Neutrals -->
+    <!-- Application Structure Plan: A single-page dashboard design. It starts with a high-level overview (segment distribution chart), then allows the user (Mentor) to dive deep into each of the 3 psychographic segments via interactive tabs. For each segment, the app presents a detailed profile, psychological drivers (Bartle's model), and a tailored strategic response (features, messaging). This is followed by a clear, visual strategic roadmap and a risk analysis section. This structure was chosen to guide the Mentor from understanding the "What" (the segments) to the "So What" (their needs) and finally the "Now What" (the action plan), making the complex report data highly digestible and actionable. -->
+    <!-- Visualization & Content Choices: 
+        1. Segment Distribution: Report Info -> 45/30/25% split. Goal -> Compare parts of a whole. Viz -> Donut Chart. Interaction -> Clickable segments to filter dashboard. Justification -> Instantly communicates user base composition. Library -> Chart.js.
+        2. Segment Profiles: Report Info -> Detailed descriptions of each persona. Goal -> Inform, Organize. Viz -> Tabbed content with styled HTML cards. Interaction -> Click tabs to switch views. Justification -> Prevents information overload, allows focused exploration. Library -> Tailwind CSS.
+        3. Strategic Roadmap: Report Info -> 3-phase rollout plan. Goal -> Show process over time. Viz -> Horizontal timeline with HTML/CSS. Interaction -> Static visual for clarity. Justification -> Intuitive representation of a phased plan. Library -> Tailwind CSS.
+        4. Risk Analysis: Report Info -> Risks and mitigations. Goal -> Inform, Organize. Viz -> Accordion-style layout. Interaction -> Click to expand/collapse. Justification -> Compactly presents detailed information. Library -> Tailwind CSS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 320px;
+            width: 100%;
+            max-width: 320px;
+        }
+        .tab-active {
+            border-color: #2563eb;
+            color: #2563eb;
+            font-weight: 600;
+            background-color: #dbeafe;
+        }
+        .tab-inactive {
+            border-color: transparent;
+            color: #6b7280;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+        
+        <header class="text-center mb-10">
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-900">Phân Tích Phân Khúc & Chiến Lược Tối Ưu Hóa</h1>
+            <p class="text-lg text-slate-600 mt-2">Nền tảng "Droppii Team Hub"</p>
+        </header>
+
+        <main>
+            <section id="dashboard" class="mb-16">
+                <div class="text-center mb-10">
+                    <h2 class="text-2xl font-bold text-slate-900">Chân Dung Toàn Cảnh Đội Nhóm</h2>
+                    <p class="mt-2 text-slate-600 max-w-2xl mx-auto">Nền tảng người dùng không đồng nhất. Dưới đây là tỷ trọng của ba phân khúc tâm lý chính. Hãy chọn một phân khúc trên biểu đồ hoặc bên dưới để khám phá sâu hơn.</p>
+                </div>
+
+                <div class="flex flex-col lg:flex-row gap-8 items-center">
+                    <div class="w-full lg:w-1/3">
+                        <div class="chart-container">
+                            <canvas id="segmentChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="w-full lg:w-2/3">
+                        <div class="border-b border-slate-200 mb-4">
+                            <nav class="-mb-px flex space-x-2 md:space-x-4" aria-label="Tabs">
+                                <button id="tab-seeker" class="tab-btn whitespace-nowrap py-3 px-2 md:px-4 border-b-2 font-medium text-sm md:text-base transition-colors duration-200">
+                                    🔎 Người Tìm Kiếm Cơ Hội
+                                </button>
+                                <button id="tab-builder" class="tab-btn whitespace-nowrap py-3 px-2 md:px-4 border-b-2 font-medium text-sm md:text-base transition-colors duration-200">
+                                    🤝 Người Xây Dựng Cộng Đồng
+                                </button>
+                                <button id="tab-achiever" class="tab-btn whitespace-nowrap py-3 px-2 md:px-4 border-b-2 font-medium text-sm md:text-base transition-colors duration-200">
+                                    🏆 Người Chinh Phục Tham Vọng
+                                </button>
+                            </nav>
+                        </div>
+                        <div id="segment-details" class="bg-white p-6 rounded-lg shadow-sm min-h-[400px]">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="roadmap" class="mb-16">
+                <div class="text-center mb-10">
+                    <h2 class="text-2xl font-bold text-slate-900">Lộ Trình Triển Khai Chiến Lược</h2>
+                    <p class="mt-2 text-slate-600 max-w-2xl mx-auto">Một kế hoạch hành động theo từng giai đoạn để tối ưu hóa nguồn lực và tạo ra tác động nhanh chóng, bền vững.</p>
+                </div>
+                <div class="relative">
+                    <div class="absolute left-1/2 top-0 bottom-0 w-0.5 bg-slate-300 hidden md:block"></div>
+                    <div class="space-y-12 md:space-y-0 md:grid md:grid-cols-3 md:gap-8">
+                        
+                        <div class="md:text-right">
+                            <div class="p-6 bg-white rounded-lg shadow-md border-l-4 border-blue-500">
+                                <p class="text-sm font-semibold text-blue-600">GIAI ĐOẠN 1 (MVP)</p>
+                                <h3 class="text-lg font-bold mt-1">Nền Tảng Vững Chắc</h3>
+                                <p class="mt-2 text-sm text-slate-600">Tập trung vào nhóm lớn nhất: "Người Tìm Kiếm Cơ Hội". Cung cấp các tính năng cốt lõi, giao diện đơn giản để tạo ra giá trị tức thì và thu thập dữ liệu ban đầu.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="md:text-center">
+                             <div class="p-6 bg-white rounded-lg shadow-md border-l-4 md:border-t-4 md:border-l-0 border-amber-500">
+                                <p class="text-sm font-semibold text-amber-600">GIAI ĐOẠN 2</p>
+                                <h3 class="text-lg font-bold mt-1">Thúc Đẩy Cạnh Tranh</h3>
+                                <p class="mt-2 text-sm text-slate-600">Thu hút "Người Chinh Phục" bằng việc triển khai Bảng xếp hạng và hệ thống Huy hiệu cơ bản. Bắt đầu tạo ra một môi trường cạnh tranh lành mạnh.</p>
+                            </div>
+                        </div>
+
+                        <div class="md:text-left">
+                            <div class="p-6 bg-white rounded-lg shadow-md border-l-4 border-emerald-500">
+                                <p class="text-sm font-semibold text-emerald-600">GIAI ĐOẠN 3</p>
+                                <h3 class="text-lg font-bold mt-1">Gắn Kết Cộng Đồng</h3>
+                                <p class="mt-2 text-sm text-slate-600">Giữ chân "Người Xây Dựng" và hoàn thiện hệ sinh thái bằng cách bổ sung các tính năng tương tác cộng đồng, vinh danh và hỗ trợ lẫn nhau.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="risks">
+                <div class="text-center mb-10">
+                    <h2 class="text-2xl font-bold text-slate-900">Phân Tích Rủi Ro & Chiến Lược Giảm Thiểu</h2>
+                    <p class="mt-2 text-slate-600 max-w-2xl mx-auto">Lường trước những thách thức tiềm tàng và chuẩn bị các phương án ứng phó hiệu quả.</p>
+                </div>
+                <div class="max-w-3xl mx-auto space-y-4">
+                    <div class="accordion-item bg-white rounded-lg shadow-sm">
+                        <button class="accordion-header w-full flex justify-between items-center text-left p-4 font-semibold">
+                            <span>Rủi ro Vận hành</span>
+                            <span class="accordion-icon text-xl transition-transform duration-300">+</span>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="p-4 pt-0 text-slate-600">
+                                <p class="font-semibold">Rủi ro:</p>
+                                <p class="mb-2">Thiết kế "one-size-fits-all" sẽ khiến "Người Chinh Phục" cảm thấy nhàm chán và "Người Tìm Kiếm" cảm thấy áp lực.</p>
+                                <p class="font-semibold">Giảm thiểu:</p>
+                                <p>Cho phép người dùng tùy chỉnh Dashboard. "Người Xây Dựng" ưu tiên feed hoạt động nhóm, trong khi "Người Chinh Phục" muốn thấy bảng xếp hạng ngay trên đầu.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item bg-white rounded-lg shadow-sm">
+                        <button class="accordion-header w-full flex justify-between items-center text-left p-4 font-semibold">
+                            <span>Rủi ro Thị trường</span>
+                            <span class="accordion-icon text-xl transition-transform duration-300">+</span>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="p-4 pt-0 text-slate-600">
+                                <p class="font-semibold">Rủi ro:</p>
+                                <p class="mb-2">Sự cạnh tranh từ các công cụ quản lý chung (Trello, Zalo) hoặc các nhóm chat có thể khiến người dùng không thấy sự cần thiết của một app riêng.</p>
+                                <p class="font-semibold">Giảm thiểu:</p>
+                                <p>Nhấn mạnh vào các tính năng chuyên biệt: tích hợp dữ liệu doanh số Droppii, hệ thống huy hiệu theo cấp bậc Coach, lộ trình thành công được chuẩn hóa.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item bg-white rounded-lg shadow-sm">
+                        <button class="accordion-header w-full flex justify-between items-center text-left p-4 font-semibold">
+                            <span>Rủi ro Tài chính</span>
+                            <span class="accordion-icon text-xl transition-transform duration-300">+</span>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="p-4 pt-0 text-slate-600">
+                                <p class="font-semibold">Rủi ro:</p>
+                                <p class="mb-2">Chi phí phát triển các tính năng cá nhân hóa cho từng phân khúc có thể vượt ngân sách của Mentor.</p>
+                                <p class="font-semibold">Giảm thiểu:</p>
+                                <p>Ưu tiên phát triển các tính năng phục vụ phân khúc lớn nhất ("Người Tìm Kiếm Cơ Hội") trong phiên bản MVP. Các tính năng khác sẽ được thêm vào sau.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+    </div>
+
+    <script>
+        const segmentData = {
+            seeker: {
+                name: "Người Tìm Kiếm Cơ Hội",
+                percentage: 45,
+                color: '#3b82f6', // blue-500
+                content: `
+                    <div class="fade-in">
+                        <h3 class="text-xl font-bold text-slate-900 mb-4">Chân dung: "Tôi muốn kiếm thêm thu nhập một cách linh hoạt."</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div class="bg-slate-50 p-3 rounded-md"><strong>Tính cách:</strong> Cẩn trọng, cần sự hướng dẫn, dễ bị choáng ngợp, được thúc đẩy bởi thành công nhỏ, hữu hình.</div>
+                            <div class="bg-slate-50 p-3 rounded-md"><strong>Giá trị:</strong> An toàn tài chính, sự linh hoạt, hiệu quả.</div>
+                            <div class="bg-slate-50 p-3 rounded-md"><strong>Thói quen:</strong> Lướt mạng xã hội tìm mẹo kinh doanh, tham gia nhóm "việc làm thêm".</div>
+                            <div class="bg-slate-50 p-3 rounded-md"><strong>Lối sống:</strong> Bận rộn (nhân viên văn phòng, mẹ bỉm sữa), tìm việc "tay trái".</div>
+                        </div>
+                        <hr class="my-4">
+                        <h4 class="font-semibold text-slate-800 mb-2">Chiến Lược Tối Ưu Hóa</h4>
+                        <ul class="list-disc list-inside space-y-2 text-slate-700 text-sm">
+                            <li><strong>Tính năng "Lộ trình 7 bước thành công":</strong> Cung cấp bản đồ rõ ràng, giảm sự choáng ngợp.</li>
+                            <li><strong>Checklist công việc hàng ngày:</strong> Tạo ra các chiến thắng nhỏ, hữu hình để thúc đẩy.</li>
+                            <li><strong>Tính năng dự báo thu nhập:</strong> Kết nối trực tiếp hành động với kết quả tài chính.</li>
+                            <li><strong>Thông điệp:</strong> "Chúng tôi cung cấp cho bạn bản đồ rõ ràng nhất để có được những đồng thu nhập đầu tiên."</li>
+                        </ul>
+                    </div>
+                `
+            },
+            builder: {
+                name: "Người Xây Dựng Cộng Đồng",
+                percentage: 30,
+                color: '#10b981', // emerald-500
+                content: `
+                    <div class="fade-in">
+                        <h3 class="text-xl font-bold text-slate-900 mb-4">Chân dung: "Kinh doanh sẽ vui hơn khi làm cùng đội nhóm."</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div class="bg-slate-50 p-3 rounded-md"><strong>Tính cách:</strong> Thân thiện, đồng cảm, thích hợp tác, được thúc đẩy bởi sự công nhận.</div>
+                            <div class="bg-slate-50 p-3 rounded-md"><strong>Giá trị:</strong> Sự kết nối, thuộc về một tập thể, sự công nhận, giúp đỡ người khác.</div>
+                            <div class="bg-slate-50 p-3 rounded-md"><strong>Thói quen:</strong> Hoạt động tích cực trong hội nhóm, thích tham gia sự kiện, chia sẻ kinh nghiệm.</div>
+                            <div class="bg-slate-50 p-3 rounded-md"><strong>Lối sống:</strong> Hướng ngoại, có mạng lưới quan hệ xã hội rộng.</div>
+                        </div>
+                        <hr class="my-4">
+                        <h4 class="font-semibold text-slate-800 mb-2">Chiến Lược Tối Ưu Hóa</h4>
+                        <ul class="list-disc list-inside space-y-2 text-slate-700 text-sm">
+                            <li><strong>"News Feed" nội bộ:</strong> Tạo không gian để chia sẻ thành tích và kết nối.</li>
+                            <li><strong>Tính năng "Gửi lời khen":</strong> Công cụ để thể hiện sự công nhận, củng cố giá trị cộng đồng.</li>
+                            <li><strong>Thử thách theo nhóm nhỏ:</strong> Thúc đẩy tinh thần hợp tác và sự gắn kết.</li>
+                            <li><strong>Thông điệp:</strong> "Cùng nhau, chúng ta tạo nên một đội nhóm vững mạnh và ăn mừng thành công của nhau."</li>
+                        </ul>
+                    </div>
+                `
+            },
+            achiever: {
+                name: "Người Chinh Phục Tham Vọng",
+                percentage: 25,
+                color: '#f59e0b', // amber-500
+                content: `
+                    <div class="fade-in">
+                        <h3 class="text-xl font-bold text-slate-900 mb-4">Chân dung: "Tôi muốn xây dựng một đế chế kinh doanh."</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div class="bg-slate-50 p-3 rounded-md"><strong>Tính cách:</strong> Cạnh tranh, tham vọng, tự chủ, có khả năng phân tích, được thúc đẩy bởi thử thách và vị thế.</div>
+                            <div class="bg-slate-50 p-3 rounded-md"><strong>Giá trị:</strong> Thành tựu, sự phát triển, quyền lực, sự giàu có, chiến thắng.</div>
+                            <div class="bg-slate-50 p-3 rounded-md"><strong>Thói quen:</strong> Đọc sách kinh doanh, nghe podcast khởi nghiệp, phân tích đối thủ.</div>
+                            <div class="bg-slate-50 p-3 rounded-md"><strong>Lối sống:</strong> Có kỷ luật, định hướng mục tiêu, sẵn sàng đầu tư.</div>
+                        </div>
+                        <hr class="my-4">
+                        <h4 class="font-semibold text-slate-800 mb-2">Chiến Lược Tối Ưu Hóa</h4>
+                        <ul class="list-disc list-inside space-y-2 text-slate-700 text-sm">
+                            <li><strong>Bảng xếp hạng chi tiết:</strong> Đáp ứng nhu cầu cạnh tranh và đo lường thành tựu (ngày/tuần/tháng).</li>
+                            <li><strong>Các cấp độ huy hiệu "huyền thoại":</strong> Tạo ra các mục tiêu dài hạn và biểu tượng vị thế.</li>
+                            <li><strong>Thử thách đặc biệt với phần thưởng lớn:</strong> Kích thích tham vọng và mong muốn chinh phục.</li>
+                            <li><strong>Thông điệp:</strong> "Đây là đấu trường dành cho những người giỏi nhất. Hãy chứng tỏ bản lĩnh của bạn."</li>
+                        </ul>
+                    </div>
+                `
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const ctx = document.getElementById('segmentChart').getContext('2d');
+            const segmentDetailsContainer = document.getElementById('segment-details');
+            const tabButtons = {
+                seeker: document.getElementById('tab-seeker'),
+                builder: document.getElementById('tab-builder'),
+                achiever: document.getElementById('tab-achiever')
+            };
+
+            const chart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: [segmentData.seeker.name, segmentData.builder.name, segmentData.achiever.name],
+                    datasets: [{
+                        label: 'Phân khúc người dùng',
+                        data: [segmentData.seeker.percentage, segmentData.builder.percentage, segmentData.achiever.percentage],
+                        backgroundColor: [segmentData.seeker.color, segmentData.builder.color, segmentData.achiever.color],
+                        borderColor: '#f8fafc',
+                        borderWidth: 4,
+                        hoverOffset: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '65%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                usePointStyle: true,
+                                pointStyle: 'circle',
+                                padding: 20,
+                                font: {
+                                    family: "'Be Vietnam Pro', sans-serif"
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.label}: ${context.raw}%`;
+                                }
+                            }
+                        }
+                    },
+                    onClick: (event, elements) => {
+                        if (elements.length > 0) {
+                            const segmentIndex = elements[0].index;
+                            const segmentKey = Object.keys(segmentData)[segmentIndex];
+                            updateContent(segmentKey);
+                        }
+                    }
+                }
+            });
+
+            function updateContent(segmentKey) {
+                segmentDetailsContainer.innerHTML = segmentData[segmentKey].content;
+                
+                Object.keys(tabButtons).forEach(key => {
+                    if (key === segmentKey) {
+                        tabButtons[key].classList.remove('tab-inactive');
+                        tabButtons[key].classList.add('tab-active');
+                    } else {
+                        tabButtons[key].classList.remove('tab-active');
+                        tabButtons[key].classList.add('tab-inactive');
+                    }
+                });
+            }
+            
+            Object.keys(tabButtons).forEach(key => {
+                tabButtons[key].addEventListener('click', () => updateContent(key));
+            });
+
+            updateContent('seeker');
+
+            const accordions = document.querySelectorAll('.accordion-item');
+            accordions.forEach(item => {
+                const header = item.querySelector('.accordion-header');
+                const content = item.querySelector('.accordion-content');
+                const icon = item.querySelector('.accordion-icon');
+                header.addEventListener('click', () => {
+                    const isOpen = content.style.maxHeight && content.style.maxHeight !== '0px';
+                    
+                    accordions.forEach(otherItem => {
+                         const otherContent = otherItem.querySelector('.accordion-content');
+                         const otherIcon = otherItem.querySelector('.accordion-icon');
+                         otherContent.style.maxHeight = '0px';
+                         otherIcon.style.transform = 'rotate(0deg)';
+                    });
+
+                    if (!isOpen) {
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                        icon.style.transform = 'rotate(45deg)';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
