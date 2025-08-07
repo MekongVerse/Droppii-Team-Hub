@@ -1,78 +1,64 @@
-/* --- Cài đặt chung & Reset --- */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
+/* Cấu trúc SPA cơ bản */
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: 'Inter', sans-serif; /* Sử dụng font mới */
+    background-color: #FDFBF8; /* Màu nền mới */
     color: #333;
-    line-height: 1.6;
+    margin: 0;
 }
 
-/* --- Bố cục chính --- */
-.app-container {
+.app-layout {
     display: flex;
     height: 100vh;
 }
 
 .sidebar {
-    width: 28%; /* Tăng nhẹ để có thêm không gian */
-    max-width: 320px;
-    background-color: #f7f7f7;
+    width: 25%;
+    max-width: 300px;
+    background-color: #f8f9fa;
     padding: 20px;
-    border-right: 1px solid #e0e0e0;
-    overflow-y: auto; /* Thêm thanh cuộn nếu nội dung quá dài */
+    overflow-y: auto;
+    border-right: 1px solid #dee2e6;
 }
 
 .content-area {
-    flex-grow: 1; /* Chiếm hết không gian còn lại */
+    flex-grow: 1;
     padding: 40px;
-    background-color: #ffffff;
     overflow-y: auto;
 }
 
-.content-area h1 {
-    color: #1a237e;
-    margin-bottom: 16px;
-    border-bottom: 2px solid #e0e0e0;
-    padding-bottom: 8px;
+/* Kiểu dáng cho Menu trong Sidebar */
+.menu-category-title {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #495057;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+    position: relative;
 }
 
-/* --- Kiểu dáng Menu Sidebar --- */
-.menu-category-title {
-    font-weight: bold;
-    cursor: pointer;
-    padding: 10px 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-radius: 4px;
-    transition: background-color 0.2s ease-in-out;
+.menu-category-title::before {
+    content: '▶';
+    position: absolute;
+    left: -5px;
+    font-size: 0.6em;
+    transition: transform 0.3s;
+}
+
+.menu-category-title.open::before {
+    transform: rotate(90deg);
 }
 
 .menu-category-title:hover {
-    background-color: #e9e9e9;
-}
-
-/* Biểu tượng mũi tên (Caret) */
-.menu-category-title::after {
-    content: '▶';
-    font-size: 0.7em;
-    transition: transform 0.2s ease-in-out;
-}
-
-.menu-category-title.open::after {
-    transform: rotate(90deg);
+    background-color: #e9ecef;
 }
 
 .submenu {
     list-style: none;
-    padding-left: 20px; /* Thụt lề các mục con */
+    padding-left: 15px;
+    transition: max-height 0.3s ease-in-out;
     overflow: hidden;
-    max-height: 1000px; /* Giá trị lớn để chứa các mục con */
-    transition: max-height 0.4s ease-in-out;
 }
 
 .submenu.collapsed {
@@ -81,21 +67,34 @@ body {
 
 .menu-item {
     display: block;
-    padding: 8px;
+    padding: 8px 10px;
+    color: #343a40;
     text-decoration: none;
-    color: #444;
-    cursor: pointer;
     border-radius: 4px;
-    transition: background-color 0.2s, color 0.2s;
+    font-size: 0.9rem;
 }
 
 .menu-item:hover {
-    background-color: #e0e0e0;
+    background-color: #dee2e6;
 }
 
-/* Kiểu cho mục đang được chọn */
 .menu-item.active {
-    background-color: #1a237e;
+    background-color: #F5A623; /* Màu active mới */
     color: white;
-    font-weight: 500;
+    font-weight: 600;
 }
+
+
+/* === BỔ SUNG CSS TÙY CHỈNH TỪ THIẾT KẾ MỚI === */
+.card {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+/* ============================================ */
