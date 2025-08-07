@@ -3,17 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Business Plan Dashboard</title>
+    <title>Droppii Team Hub - Bảng Điều Khiển Chiến Lược</title>
+    
+    <!-- === BỔ SUNG TỪ THIẾT KẾ MỚI === -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- =============================== -->
+
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <div class="app-container">
-        <nav id="sidebar" class="sidebar"></nav>
+<body class="antialiased">
 
-        <main id="content-area" class="content-area">
-            <h1>Chào mừng bạn!</h1>
-            <p>Vui lòng chọn một mục từ thanh điều hướng bên trái để xem chi tiết kế hoạch kinh doanh.</p>
-        </main>
+    <div class="app-layout">
+        <aside id="sidebar" class="sidebar"></aside>
+        <main id="content-area" class="content-area"></main>
     </div>
 
     <script src="script.js"></script>
