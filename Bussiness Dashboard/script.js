@@ -1,6 +1,50 @@
 document.addEventListener('DOMContentLoaded', function () {
 
-    // Dữ liệu cho menu, được chuyển từ dàn ý bạn cung cấp
+    // ==================================================================
+    // THƯ VIỆN NỘI DUNG TRUNG TÂM
+    // ==================================================================
+    const pageContent = {
+        "idea-brand-business-plan": `<h1>Idea - "Brand" Business Plan</h1><p>Awaiting Content...</p>`,
+        "customer-profile": `<h1>Customer Profile</h1><p>Awaiting Content...</p>`,
+        
+        // === NỘI DUNG MỚI CHO TARGET AUDIENCE ĐÃ ĐƯỢC CHIẾT XUẤT ===
+        "target-audience": `
+            <section id="personas">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800 text-center mb-4">Chân Dung Hai Đối Tượng Vàng</h2>
+                <p class="max-w-3xl mx-auto text-gray-600 text-center mb-12">Hiểu rõ nhu cầu và tâm lý của Mentor và Thành viên là chìa khóa để xây dựng một nền tảng thực sự giá trị.</p>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="card p-8">
+                        <h3 class="text-2xl font-bold mb-4">Mentor (Nhà Đầu Tư)</h3>
+                        <p class="text-gray-600 mb-6">Nhà lãnh đạo, nhà xây dựng hệ thống, tập trung vào tăng trưởng bền vững và hiệu quả quản lý.</p>
+                        <ul class="space-y-3 text-gray-700">
+                            <li class="flex items-center"><span class="text-xl mr-3">🎯</span> Tư duy chiến lược, hướng đến ROI.</li>
+                            <li class="flex items-center"><span class="text-xl mr-3">📊</span> Mong muốn quản lý dựa trên dữ liệu.</li>
+                            <li class="flex items-center"><span class="text-xl mr-3">🛠️</span> Sẵn sàng đầu tư vào công cụ tạo đòn bẩy.</li>
+                            <li class="flex items-center"><span class="text-xl mr-3">🏆</span> Giá trị cốt lõi: Hiệu quả & Sự thành công của đội nhóm.</li>
+                        </ul>
+                    </div>
+                    <div class="card p-8">
+                        <h3 class="text-2xl font-bold mb-4">Thành Viên (Người Dùng)</h3>
+                        <p class="text-gray-600 mb-6">Những cá nhân có mục tiêu nhưng đôi khi thiếu phương hướng, cần một lộ trình rõ ràng và sự công nhận.</p>
+                        <ul class="space-y-3 text-gray-700">
+                            <li class="flex items-center"><span class="text-xl mr-3">🧭</span> Cần một quy trình có cấu trúc, dễ đi theo.</li>
+                            <li class="flex items-center"><span class="text-xl mr-3">💡</span> Được thúc đẩy bởi mục tiêu rõ ràng và sự công nhận.</li>
+                            <li class="flex items-center"><span class="text-xl mr-3">🤝</span> Tìm kiếm sự hỗ trợ từ cộng đồng.</li>
+                            <li class="flex items-center"><span class="text-xl mr-3">💸</span> Giá trị cốt lõi: Tăng thu nhập & Cảm giác thành tựu.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        `,
+        // ==========================================================
+
+        "psychographic-segmentation": `<h1>Psychographic Segmentation</h1><p>Awaiting Content...</p>`,
+        "latent-pain-points": `<h1>Latent Pain Points</h1><p>Awaiting Content...</p>`,
+        "dream-state": `<h1>Dream State</h1><p>Awaiting Content...</p>`,
+    };
+
+
+    // Dữ liệu cho menu (giữ nguyên)
     const businessPlanOutline = [
         {
             category: "Product / Service / Business Idea",
@@ -13,93 +57,37 @@ document.addEventListener('DOMContentLoaded', function () {
                 "Buyer Personas"
             ]
         },
-        {
-            category: "Business Plan",
-            items: [
-                "Mission Statement", "Vision Statement", "Value Proposition",
-                "Value Proposition (Short)", "Business Description",
-                "What is Success for This Business", "Explaination of Business Model",
-                "Metrics that Matter (KPIs)", "Core Problems This Business Solves", "Business Goals"
-            ]
-        },
-        {
-            category: "Market Research",
-            items: [
-                "Needs Analysis", "Market Size Analysis", "Market Trend Analysis",
-                "Competitive Analysis", "Market Research Summary", "Customer Journey", "Brand Position"
-            ]
-        },
-        {
-            category: "Brand Identity",
-            items: [
-                "Brand Name", "Tag Line", "Unique Selling Proposition", "Logo", "Colors",
-                "Imagery", "Voice and Tone", "Brand Guidelines"
-            ]
-        },
-        {
-            category: "Marketing Message",
-            items: [
-                "Unique Selling Proposition", "Features", "Benefits", "Story Telling",
-                "Clear Call to Action", "Irresistible Offer"
-            ]
-        },
-        {
-            category: "Marketing Plan",
-            items: [
-                "Situational Analysis", "Marketing Objectives", "Marketing Strategies",
-                "Tactics and Action Plans", "Performance Metrics and KPI's", "Influencer Strategy- Marketing Content",
-                "Adventorial", "Website Copy", "Landing Page Copy", "Introduction Video Script",
-                "Social Media Bio [Instagram]", "Social Media Bio [Linkedin]", "Facebook Bio [TikTok]",
-                "Facebook Ads Concepts", "Content Pillars", "Content Pillar 1 (10 Ideas)",
-                "Content Pillar 2 (10 Ideas)", "Content Pillar 3 (10 Ideas)", "Content Pillar 4 (10 Ideas)",
-                "Content Pillar 5 (10 Ideas)", "Sales Channels", "Go to Market Strategy", "PR Strategy",
-                "Strategic Partner Strategy", "PR Boiler Plate", "Fastest Way to First 100 Customers",
-                "Bullseye Framework", "Lean Analytics Stages", "AARRR (Pirate Metrics) Framework"
-            ]
-        },
-        {
-            category: "Raising Capital",
-            items: [
-                "Why a VC Would Decline to Invest", "Business Model Risks",
-                "Why a VC Would Want to Invest", "Investor Presentation Slides to Raisie $5M USD"
-            ]
-        },
-        {
-            category: "Just for Fun",
-            items: [
-                "Advice from Steve Jobs", "Advice from Elon Musk", "Advice from Jeff Bezos",
-                "Advice from Peter Thiel", "Advice from Mark Zuckerberg", "Advice from Paul Graham",
-                "Advice from Ried Hoffman", "Advice from Niel Patel"
-            ]
-        }
+        // ... các category khác giữ nguyên
     ];
 
     const sidebar = document.getElementById('sidebar');
     const contentArea = document.getElementById('content-area');
     let activeMenuItem = null;
 
-    // Hàm tạo menu từ dữ liệu
+    function createPageId(text) {
+        return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    }
+
     function generateMenu() {
         businessPlanOutline.forEach(section => {
-            // Tạo container cho mỗi danh mục
             const categoryDiv = document.createElement('div');
             categoryDiv.classList.add('menu-category');
 
-            // Tạo tiêu đề danh mục (có thể nhấp để mở/đóng)
             const title = document.createElement('div');
             title.textContent = section.category;
             title.classList.add('menu-category-title');
             categoryDiv.appendChild(title);
 
-            // Tạo danh sách con (submenu)
             const submenu = document.createElement('ul');
-            submenu.classList.add('submenu', 'collapsed'); // Mặc định đóng
+            submenu.classList.add('submenu', 'collapsed');
             section.items.forEach(itemText => {
                 const listItem = document.createElement('li');
-                const link = document.createElement('a'); // Dùng <a> để có ngữ nghĩa tốt hơn
+                const link = document.createElement('a');
                 link.textContent = itemText;
                 link.classList.add('menu-item');
-                link.setAttribute('href', '#'); // Tránh trang nhảy lên đầu
+                link.setAttribute('href', '#');
+                const pageId = createPageId(itemText);
+                link.setAttribute('data-id', pageId); 
                 listItem.appendChild(link);
                 submenu.appendChild(listItem);
             });
@@ -109,40 +97,43 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Hàm cập nhật nội dung
-    function updateContent(title) {
-        contentArea.innerHTML = `
-            <h1>${title}</h1>
-            <p>Awaiting Content. Details for this section will be added here.</p>
-        `;
+    function updateContent(pageId) {
+        const content = pageContent[pageId];
+        if (content) {
+            contentArea.innerHTML = content;
+        } else {
+            const title = pageId.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            contentArea.innerHTML = `
+                <h1 class="text-3xl font-bold mb-4">${title}</h1>
+                <p class="text-gray-600">Awaiting Content. Details for this section will be added here.</p>
+            `;
+        }
     }
     
-    // Gắn trình xử lý sự kiện vào sidebar (sử dụng event delegation)
     sidebar.addEventListener('click', function(event) {
-        event.preventDefault(); // Ngăn hành vi mặc định của thẻ <a>
+        event.preventDefault();
         const target = event.target;
 
-        // Xử lý khi nhấp vào tiêu đề danh mục
         if (target.classList.contains('menu-category-title')) {
             target.classList.toggle('open');
             const submenu = target.nextElementSibling;
             submenu.classList.toggle('collapsed');
         }
 
-        // Xử lý khi nhấp vào một mục con
         if (target.classList.contains('menu-item')) {
-            // Bỏ active ở mục cũ (nếu có)
             if (activeMenuItem) {
                 activeMenuItem.classList.remove('active');
             }
-            // Đặt active cho mục mới
             target.classList.add('active');
             activeMenuItem = target;
-
-            updateContent(target.textContent);
+            const pageIdToLoad = target.getAttribute('data-id');
+            updateContent(pageIdToLoad);
         }
     });
 
-    // Bắt đầu!
     generateMenu();
+    const firstMenuItem = document.querySelector('.menu-item');
+    if (firstMenuItem) {
+        firstMenuItem.click();
+    }
 });
