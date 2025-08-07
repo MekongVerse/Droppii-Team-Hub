@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phân Tích Tương Tác: Nỗi Đau Ngầm Của Mentor Droppii</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chosen Palette: Calm Harmony (Nền trung tính ấm, nhấn nhá bằng màu xanh mòng két và cam đất) -->
+    <!-- Application Structure Plan: Thiết kế dạng dashboard/infographic một trang, tập trung vào trải nghiệm khám phá phi tuyến tính. Người dùng có thể điều hướng tự do giữa 3 "Nỗi Đau" chính thông qua thanh điều hướng cố định. Mỗi khu vực nỗi đau được cấu trúc theo một luồng logic: 1) Chẩn Đoán (Vấn đề, Biểu hiện, Hệ quả) -> 2) Trực Quan Hóa (Biểu đồ so sánh tác động) -> 3) Giải Pháp (Các tính năng Hub được đề xuất). Cấu trúc này giúp người dùng nhanh chóng nắm bắt vấn đề, thấy được tầm quan trọng của nó qua biểu đồ, và khám phá ngay các giải pháp khả thi, tạo ra một hành trình nhận thức hoàn chỉnh và thuyết phục. -->
+    <!-- Visualization & Content Choices: 1. "Bác sĩ bất lực": Dùng biểu đồ Radar của Chart.js để so sánh năng lực của Mentor "Trước" và "Sau" khi có Hub, trực quan hóa sự cải thiện đa chiều. 2. "Gánh nặng Đấng Toàn Năng": Dùng HTML/CSS để tạo sơ đồ luồng công việc tương tác (toggle), cho thấy sự khác biệt giữa mô hình "Nút thắt cổ chai" và "Hệ sinh thái được trao quyền". 3. "Nỗi cô đơn trên đỉnh": Dùng biểu đồ Cột của Chart.js để so sánh mức độ cô lập cảm xúc, một cách đơn giản nhưng mạnh mẽ để thể hiện tác động của giải pháp. Tất cả các giải pháp được trình bày dưới dạng thẻ (card) tương tác để thu hút sự chú ý. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background-color: #FDFBF8;
+            color: #3D475C;
+        }
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 320px;
+            width: 100%;
+            max-width: 450px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+                max-width: 550px;
+            }
+        }
+        .glassmorphism {
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        .tab-active {
+            background-color: #4A908A;
+            color: #FFFFFF;
+        }
+        .tab-inactive {
+            background-color: #E0E7ED;
+            color: #3D475C;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header id="top" class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+        <div class="container mx-auto px-4">
+            <nav class="flex justify-between items-center py-4">
+                <div class="text-xl font-bold text-[#3D475C]">
+                    Mentor's Insight Hub
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#pain1" class="font-medium text-gray-600 hover:text-[#4A908A] transition-colors">Bác sĩ bất lực</a>
+                    <a href="#pain2" class="font-medium text-gray-600 hover:text-[#4A908A] transition-colors">Gánh nặng Toàn năng</a>
+                    <a href="#pain3" class="font-medium text-gray-600 hover:text-[#4A908A] transition-colors">Nỗi cô đơn</a>
+                </div>
+                <div class="md:hidden">
+                    <button id="menu-btn" class="text-gray-600 focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </nav>
+            <div id="mobile-menu" class="hidden md:hidden pb-4">
+                <a href="#pain1" class="block py-2 px-4 text-sm text-gray-600 hover:bg-gray-100 rounded">Bác sĩ bất lực</a>
+                <a href="#pain2" class="block py-2 px-4 text-sm text-gray-600 hover:bg-gray-100 rounded">Gánh nặng Toàn năng</a>
+                <a href="#pain3" class="block py-2 px-4 text-sm text-gray-600 hover:bg-gray-100 rounded">Nỗi cô đơn</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 md:py-16">
+        <section class="text-center mb-16 md:mb-24">
+            <h1 class="text-4xl md:text-5xl font-bold text-[#3D475C] mb-4">Giải mã Nỗi Đau Ngầm của Mentor</h1>
+            <p class="max-w-3xl mx-auto text-lg text-gray-600">
+                Để xây dựng một đội nhóm vững mạnh, trước hết phải thấu hiểu và trao quyền cho người lãnh đạo. Ứng dụng này trực quan hóa những thách thức tâm lý mà Mentor đang đối mặt và đề xuất giải pháp chiến lược thông qua Droppii Team Hub.
+            </p>
+        </section>
+
+        <!-- Pain Point 1 -->
+        <section id="pain1" class="pt-20 -mt-16 mb-24">
+            <div class="bg-white rounded-2xl shadow-lg p-6 md:p-10 overflow-hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
+                    <div class="flex flex-col justify-center">
+                        <span class="text-sm font-semibold text-[#E57373] mb-1">NỖI ĐAU #1</span>
+                        <h2 class="text-3xl font-bold text-[#3D475C] mb-4">Hội chứng "Bác sĩ bất lực"</h2>
+                        <p class="text-gray-600 mb-6">Mentor thấy "triệu chứng" của đội nhóm nhưng không thể "chẩn đoán" nguyên nhân gốc rễ, dẫn đến những lời khuyên chung chung, kém hiệu quả và dần bị bào mòn cảm xúc.</p>
+                        
+                        <div class="mb-6">
+                            <div class="flex border-b border-gray-200">
+                                <button data-tab="pain1-symptoms" class="tab-btn-1 py-2 px-4 font-medium text-sm rounded-t-lg tab-active">Biểu hiện</button>
+                                <button data-tab="pain1-consequences" class="tab-btn-1 py-2 px-4 font-medium text-sm rounded-t-lg tab-inactive">Hệ quả</button>
+                            </div>
+                            <div id="pain1-symptoms" class="tab-content-1 py-4 text-sm text-gray-600">
+                                <ul class="list-disc list-inside space-y-2">
+                                    <li>Cảm thấy bất lực khi động viên thành viên nhưng không có kết quả.</li>
+                                    <li>Cảm thấy tội lỗi, kém cỏi khi một thành viên tiềm năng rời đi.</li>
+                                    <li>Chỉ có thể tổ chức các buổi họp chung chung, cố gắng "truyền lửa" một cách dàn trải.</li>
+                                </ul>
+                            </div>
+                            <div id="pain1-consequences" class="tab-content-1 py-4 text-sm text-gray-600 hidden">
+                                <p>Mentor bị bào mòn về cảm xúc (emotional burnout), dần mất niềm tin vào khả năng lãnh đạo và bắt đầu né tránh những "ca khó".</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-center text-lg font-semibold mb-2">Tác Động Của Hub Lên Năng Lực Mentor</h3>
+                        <div class="chart-container">
+                            <canvas id="pain1Chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-10 pt-8 border-t border-gray-200">
+                    <h3 class="text-2xl font-bold text-center mb-6 text-[#4A908A]">Giải Pháp: Biến Hub Thành "Máy Chẩn Đoán & Can Thiệp"</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-teal-50/50 p-6 rounded-lg border border-teal-100">
+                            <h4 class="font-bold text-lg text-[#3D475C] mb-2">Dashboard Chẩn Đoán Hành Vi</h4>
+                            <p class="text-sm text-gray-600">Phân tích hành vi (soạn bài nhưng không đăng, xem nhiều sản phẩm nhưng không học) để đưa ra cảnh báo sớm về các rủi ro tâm lý, thay vì chỉ báo cáo doanh số.</p>
+                        </div>
+                        <div class="bg-teal-50/50 p-6 rounded-lg border border-teal-100">
+                            <h4 class="font-bold text-lg text-[#3D475C] mb-2">Gợi Ý Can Thiệp Thông Minh</h4>
+                            <p class="text-sm text-gray-600">Dựa vào chẩn đoán, Hub tự động gợi ý cho Mentor những hành động cụ thể, kèm theo kịch bản, mẫu tin nhắn để can thiệp đúng lúc, đúng cách.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pain Point 2 -->
+        <section id="pain2" class="pt-20 -mt-16 mb-24">
+            <div class="bg-white rounded-2xl shadow-lg p-6 md:p-10 overflow-hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
+                    <div class="flex flex-col justify-center">
+                        <span class="text-sm font-semibold text-[#E57373] mb-1">NỖI ĐAU #2</span>
+                        <h2 class="text-3xl font-bold text-[#3D475C] mb-4">"Gánh nặng của Đấng Toàn Năng"</h2>
+                        <p class="text-gray-600 mb-6">Áp lực phải biết mọi thứ biến Mentor thành "nút thắt cổ chai" của đội nhóm. Họ kiệt sức vì quá tải thông tin và sợ bị phát hiện là "không biết".</p>
+                        
+                        <div class="mb-6">
+                            <div class="flex border-b border-gray-200">
+                                <button data-tab="pain2-symptoms" class="tab-btn-2 py-2 px-4 font-medium text-sm rounded-t-lg tab-active">Biểu hiện</button>
+                                <button data-tab="pain2-consequences" class="tab-btn-2 py-2 px-4 font-medium text-sm rounded-t-lg tab-inactive">Hệ quả</button>
+                            </div>
+                            <div id="pain2-symptoms" class="tab-content-2 py-4 text-sm text-gray-600">
+                                <ul class="list-disc list-inside space-y-2">
+                                    <li>Luôn cố tỏ ra bận rộn và hiểu biết.</li>
+                                    <li>Ngại thừa nhận "Cái này anh/chị cũng không rõ".</li>
+                                    <li>Trở thành người trả lời mọi câu hỏi, thay vì hướng dẫn đội nhóm tự tìm kiếm.</li>
+                                </ul>
+                            </div>
+                            <div id="pain2-consequences" class="tab-content-2 py-4 text-sm text-gray-600 hidden">
+                                <p>Mentor trở thành "nút thắt cổ chai", ngăn cản sự phát triển độc lập của thành viên. Mọi việc đều phải chờ họ, dẫn đến kiệt sức.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-center justify-center">
+                        <h3 class="text-center text-lg font-semibold mb-4">Tái Cấu Trúc Luồng Hỗ Trợ</h3>
+                        <div class="w-full max-w-md p-4 rounded-lg bg-gray-50">
+                            <div class="flex justify-center mb-4">
+                                <button id="flow-toggle-btn" class="bg-[#4A908A] text-white font-semibold py-2 px-4 rounded-full shadow-md hover:bg-teal-700 transition-all">Xem mô hình mới ➔</button>
+                            </div>
+                            <div id="flow-diagram" class="relative h-64">
+                                <!-- State 1: Bottleneck -->
+                                <div id="bottleneck-state">
+                                    <div class="text-center mb-2 font-bold text-red-600">Mô hình "Nút thắt cổ chai"</div>
+                                    <div class="flex justify-around items-center h-full">
+                                        <div class="text-center">👤<br>TV 1</div>
+                                        <div class="text-center">👤<br>TV 2</div>
+                                        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center p-3 bg-red-200 rounded-full border-2 border-red-500">👑<br>Mentor</div>
+                                        <div class="text-center">👤<br>TV 3</div>
+                                        <div class="text-center">👤<br>TV 4</div>
+                                    </div>
+                                    <!-- Arrows -->
+                                    <div class="absolute top-[55%] left-[15%] text-red-500 text-2xl">→</div>
+                                    <div class="absolute top-[55%] left-[30%] text-red-500 text-2xl">→</div>
+                                    <div class="absolute top-[55%] right-[30%] text-red-500 text-2xl">←</div>
+                                    <div class="absolute top-[55%] right-[15%] text-red-500 text-2xl">←</div>
+                                </div>
+                                <!-- State 2: Empowered -->
+                                <div id="empowered-state" class="hidden">
+                                    <div class="text-center mb-2 font-bold text-green-600">Mô hình "Hệ sinh thái trao quyền"</div>
+                                    <div class="flex justify-around items-center h-full">
+                                        <div class="text-center">👤↔️👤</div>
+                                        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center p-3 bg-green-200 rounded-full border-2 border-green-500">🤖<br>Hub AI</div>
+                                        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 text-center">👑<br>Mentor</div>
+                                        <div class="text-center">👤↔️👤</div>
+                                    </div>
+                                    <div class="absolute top-[35%] left-1/2 -translate-x-1/2 text-green-500 text-2xl">↓</div>
+                                    <div class="absolute top-[60%] left-[25%] text-green-500 text-2xl">↔️</div>
+                                    <div class="absolute top-[60%] right-[25%] text-green-500 text-2xl">↔️</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-10 pt-8 border-t border-gray-200">
+                    <h3 class="text-2xl font-bold text-center mb-6 text-[#4A908A]">Giải Pháp: Biến Hub Thành "Bộ Não Thứ Hai"</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-teal-50/50 p-6 rounded-lg border border-teal-100">
+                            <h4 class="font-bold text-lg text-[#3D475C] mb-2">Trợ lý Trả lời Tự động</h4>
+                            <p class="text-sm text-gray-600">AI của Hub tự động tìm câu trả lời cho các câu hỏi phổ biến và gợi ý cho Mentor, giúp họ trả lời nhanh chóng và chính xác mà không cần tự tìm kiếm.</p>
+                        </div>
+                        <div class="bg-teal-50/50 p-6 rounded-lg border border-teal-100">
+                            <h4 class="font-bold text-lg text-[#3D475C] mb-2">Tự động hóa Lộ trình Onboarding</h4>
+                            <p class="text-sm text-gray-600">Mentor chỉ cần thiết lập lộ trình cho người mới một lần. Hub sẽ tự động giao nhiệm vụ, nhắc nhở và báo cáo, giải phóng Mentor khỏi các công việc lặp lại.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pain Point 3 -->
+        <section id="pain3" class="pt-20 -mt-16 mb-24">
+            <div class="bg-white rounded-2xl shadow-lg p-6 md:p-10 overflow-hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
+                    <div class="flex flex-col justify-center">
+                        <span class="text-sm font-semibold text-[#E57373] mb-1">NỖI ĐAU #3</span>
+                        <h2 class="text-3xl font-bold text-[#3D475C] mb-4">"Nỗi cô đơn trên đỉnh"</h2>
+                        <p class="text-gray-600 mb-6">Mentor phải luôn là biểu tượng của sự tích cực, không thể chia sẻ khó khăn hay sự nghi ngờ bản thân, dẫn đến cảm giác bị cô lập về mặt cảm xúc.</p>
+                        
+                        <div class="mb-6">
+                            <div class="flex border-b border-gray-200">
+                                <button data-tab="pain3-symptoms" class="tab-btn-3 py-2 px-4 font-medium text-sm rounded-t-lg tab-active">Biểu hiện</button>
+                                <button data-tab="pain3-consequences" class="tab-btn-3 py-2 px-4 font-medium text-sm rounded-t-lg tab-inactive">Hệ quả</button>
+                            </div>
+                            <div id="pain3-symptoms" class="tab-content-3 py-4 text-sm text-gray-600">
+                                <ul class="list-disc list-inside space-y-2">
+                                    <li>Chỉ chia sẻ những câu chuyện thành công, hình ảnh tích cực.</li>
+                                    <li>Khó tìm kiếm sự đồng cảm và lời khuyên từ những người đồng cấp.</li>
+                                    <li>Cảm thấy bị cô lập ngay cả khi được bao quanh bởi đội nhóm.</li>
+                                </ul>
+                            </div>
+                            <div id="pain3-consequences" class="tab-content-3 py-4 text-sm text-gray-600 hidden">
+                                <p>Dẫn đến căng thẳng mãn tính. Việc liên tục phải đeo "mặt nạ thành công" làm giảm khả năng kết nối chân thực và có thể gây ra các vấn đề sức khỏe tinh thần.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-center text-lg font-semibold mb-2">Tác Động Của Hub Lên Sức Khỏe Tinh Thần</h3>
+                        <div class="chart-container">
+                            <canvas id="pain3Chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-10 pt-8 border-t border-gray-200">
+                    <h3 class="text-2xl font-bold text-center mb-6 text-[#4A908A]">Giải Pháp: Biến Hub Thành "Không Gian An Toàn"</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-teal-50/50 p-6 rounded-lg border border-teal-100">
+                            <h4 class="font-bold text-lg text-[#3D475C] mb-2">Mentor's Circle</h4>
+                            <p class="text-sm text-gray-600">Một diễn đàn riêng, có thể ẩn danh, chỉ dành cho các Mentor. Là nơi họ có thể chia sẻ "ca khó", thất bại và học hỏi kinh nghiệm mà không sợ bị đánh giá.</p>
+                        </div>
+                        <div class="bg-teal-50/50 p-6 rounded-lg border border-teal-100">
+                            <h4 class="font-bold text-lg text-[#3D475C] mb-2">AI Confidant (Người bạn tâm giao AI)</h4>
+                            <p class="text-sm text-gray-600">Một chatbot riêng tư để Mentor có thể "xả" những trăn trở. AI sẽ lắng nghe, cung cấp phân tích khách quan và các chiến lược lãnh đạo dựa trên tâm lý học.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white">
+        <div class="container mx-auto px-4 py-6 text-center">
+            <p class="text-sm">&copy; 2025 Mentor's Insight Hub. Một sản phẩm phân tích chiến lược.</p>
+            <p class="text-xs text-gray-400 mt-1">Được thiết kế để trao quyền cho những người dẫn dắt.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Mobile Menu
+            const menuBtn = document.getElementById('menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            menuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // Generic Tab Switcher Logic
+            function setupTabs(containerSelector, btnClass, contentClass) {
+                const container = document.querySelector(containerSelector);
+                if (!container) return;
+                const tabButtons = container.querySelectorAll(`.${btnClass}`);
+                const tabContents = container.querySelectorAll(`.${contentClass}`);
+                
+                tabButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        const tabId = button.dataset.tab;
+
+                        tabButtons.forEach(btn => {
+                            btn.classList.remove('tab-active');
+                            btn.classList.add('tab-inactive');
+                        });
+                        button.classList.add('tab-active');
+                        button.classList.remove('tab-inactive');
+
+                        tabContents.forEach(content => {
+                            if (content.id === tabId) {
+                                content.classList.remove('hidden');
+                            } else {
+                                content.classList.add('hidden');
+                            }
+                        });
+                    });
+                });
+            }
+
+            setupTabs('#pain1', 'tab-btn-1', 'tab-content-1');
+            setupTabs('#pain2', 'tab-btn-2', 'tab-content-2');
+            setupTabs('#pain3', 'tab-btn-3', 'tab-content-3');
+
+            // Chart for Pain Point 1
+            const ctx1 = document.getElementById('pain1Chart');
+            if (ctx1) {
+                new Chart(ctx1, {
+                    type: 'radar',
+                    data: {
+                        labels: ['Chẩn đoán chính xác', 'Can thiệp hiệu quả', 'Tiết kiệm thời gian', 'Sức khỏe tinh thần', 'Tự tin lãnh đạo'],
+                        datasets: [{
+                            label: 'Mentor Hiện Tại',
+                            data: [4, 5, 3, 4, 5],
+                            backgroundColor: 'rgba(229, 115, 115, 0.2)',
+                            borderColor: 'rgba(229, 115, 115, 1)',
+                            pointBackgroundColor: 'rgba(229, 115, 115, 1)',
+                            borderWidth: 2
+                        }, {
+                            label: 'Mentor được trao quyền bởi Hub',
+                            data: [9, 8, 8, 9, 9],
+                            backgroundColor: 'rgba(74, 144, 138, 0.2)',
+                            borderColor: 'rgba(74, 144, 138, 1)',
+                            pointBackgroundColor: 'rgba(74, 144, 138, 1)',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            r: {
+                                angleLines: {
+                                    color: 'rgba(0, 0, 0, 0.1)'
+                                },
+                                suggestedMin: 0,
+                                suggestedMax: 10,
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.1)'
+                                },
+                                pointLabels: {
+                                    font: {
+                                        size: 11
+                                    },
+                                    color: '#3D475C'
+                                },
+                                ticks: {
+                                    backdropColor: 'rgba(0,0,0,0)',
+                                    color: 'gray'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Interactive Diagram for Pain Point 2
+            const flowToggleBtn = document.getElementById('flow-toggle-btn');
+            const bottleneckState = document.getElementById('bottleneck-state');
+            const empoweredState = document.getElementById('empowered-state');
+            let isBottleneck = true;
+
+            if(flowToggleBtn) {
+                flowToggleBtn.addEventListener('click', () => {
+                    isBottleneck = !isBottleneck;
+                    if (isBottleneck) {
+                        bottleneckState.classList.remove('hidden');
+                        empoweredState.classList.add('hidden');
+                        flowToggleBtn.textContent = 'Xem mô hình mới ➔';
+                        flowToggleBtn.classList.remove('bg-red-600');
+                        flowToggleBtn.classList.add('bg-[#4A908A]');
+                    } else {
+                        bottleneckState.classList.add('hidden');
+                        empoweredState.classList.remove('hidden');
+                        flowToggleBtn.textContent = '❮ Xem mô hình cũ';
+                        flowToggleBtn.classList.remove('bg-[#4A908A]');
+                        flowToggleBtn.classList.add('bg-red-600');
+                    }
+                });
+            }
+
+            // Chart for Pain Point 3
+            const ctx3 = document.getElementById('pain3Chart');
+            if (ctx3) {
+                new Chart(ctx3, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Không có Vùng An Toàn', 'Có Mentor\'s Circle & AI'],
+                        datasets: [{
+                            label: 'Mức độ cô lập cảm xúc',
+                            data: [8.5, 2.5],
+                            backgroundColor: [
+                                'rgba(229, 115, 115, 0.6)',
+                                'rgba(74, 144, 138, 0.6)'
+                            ],
+                            borderColor: [
+                                'rgba(229, 115, 115, 1)',
+                                'rgba(74, 144, 138, 1)'
+                            ],
+                            borderWidth: 2,
+                            borderRadius: 5
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                max: 10,
+                                grid: {
+                                    display: false
+                                }
+                            },
+                             y: {
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `Mức độ: ${context.raw}/10`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
