@@ -1,61 +1,69 @@
-
-<!-- ===== MASTER NAVIGATION TEMPLATE V3 - MULTI-LEVEL DROPDOWN ===== -->
-<!-- Hướng dẫn: Thay thế toàn bộ khối <nav> hoặc <header> trong mỗi file HTML bằng khối này. -->
+<!-- ===== MASTER NAVIGATION TEMPLATE V4 - FINAL & COMPLETE ===== -->
 <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
     <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
-        <!-- Logo / Tên Trang Web -->
+        <!-- Logo -->
         <a href="/index.html" class="text-xl md:text-2xl font-bold text-gray-800">
             <span class="text-orange-500">Droppii</span> Team Hub
         </a>
 
-        <!-- Menu cho màn hình lớn (Desktop) -->
-        <div class="hidden md:flex items-center space-x-4">
+        <!-- Desktop Menu -->
+        <div class="hidden md:flex items-center space-x-2">
 
-            <!-- Mục 1: Product Idea -->
+            <!-- Menu Dropdown: Product Idea -->
             <div class="relative group">
-                <a href="/product-idea/index.html" class="nav-link font-medium px-3 py-2">Product Idea</a>
-            </div>
-
-            <!-- Mục 2: Customer Profile (Dropdown) -->
-            <div class="relative group">
-                <button class="nav-link font-medium px-3 py-2 flex items-center">
-                    <span>Customer Profile</span>
+                <a href="/product-idea/index.html" class="nav-link font-medium px-3 py-2 flex items-center">
+                    <span>Product Idea</span>
                     <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                </button>
+                </a>
                 <div class="absolute left-0 mt-2 w-64 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
-                    <div class="py-1">
-                        <a href="/customer-profile/target-audience.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Target Audience</a>
-                        <a href="/customer-profile/persona-1.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Persona 1</a>
-                        <a href="/customer-profile/dream-state.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Dream State</a>
-                        <!-- Thêm các link khác cho mục này -->
+                    <div class="py-1 max-h-96 overflow-y-auto">
+                        <a href="/product-idea/customer-profile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Customer Profile</a>
+                        <a href="/product-idea/target-audience.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Target Audience</a>
+                        <a href="/product-idea/persona-1.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Persona 1/2/3</a>
+                        <!-- ... Thêm các link khác ... -->
                     </div>
                 </div>
             </div>
 
-            <!-- Mục 3: Business Plan (Dropdown) -->
+            <!-- Menu Dropdown: Business Plan -->
             <div class="relative group">
-                <button class="nav-link font-medium px-3 py-2 flex items-center">
+                <a href="/business-plan/index.html" class="nav-link font-medium px-3 py-2 flex items-center">
                     <span>Business Plan</span>
                     <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                </button>
+                </a>
                 <div class="absolute left-0 mt-2 w-64 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
-                    <div class="py-1">
+                    <div class="py-1 max-h-96 overflow-y-auto">
                         <a href="/business-plan/mission-statement.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Mission Statement</a>
                         <a href="/business-plan/vision-statement.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Vision Statement</a>
                         <a href="/business-plan/value-proposition.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Value Proposition</a>
-                        <!-- Thêm các link khác cho mục này -->
+                        <!-- ... Thêm các link khác ... -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menu Dropdown: Market Research -->
+            <div class="relative group">
+                <a href="/market-research/index.html" class="nav-link font-medium px-3 py-2 flex items-center">
+                    <span>Market Research</span>
+                    <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </a>
+                <div class="absolute left-0 mt-2 w-64 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                    <div class="py-1">
+                        <a href="/market-research/needs-analysis.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Needs Analysis</a>
+                        <a href="/market-research/competitive-analysis.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Competitive Analysis</a>
                     </div>
                 </div>
             </div>
             
-            <!-- Mục 4: Marketing (Dropdown) -->
+            <!-- Menu Dropdown: Marketing -->
             <div class="relative group">
-                <button class="nav-link font-medium px-3 py-2 flex items-center">
+                <a href="/marketing/index.html" class="nav-link font-medium px-3 py-2 flex items-center">
                     <span>Marketing</span>
                     <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                </button>
+                </a>
                 <div class="absolute left-0 mt-2 w-64 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
                     <div class="py-1">
+                        <a href="/marketing/message/index.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Marketing Message</a>
                         <a href="/marketing/plan/index.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Marketing Plan</a>
                         <a href="/marketing/content/index.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Marketing Content</a>
                         <a href="/marketing/social-media/index.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Social Media</a>
@@ -63,21 +71,18 @@
                 </div>
             </div>
 
-            <!-- Thêm các mục dropdown khác cho Market Research, Growth Plan, etc. -->
+            <!-- Thêm các mục đơn hoặc dropdown khác cho Sales, PR, Growth, Capital... -->
+            <a href="/growth-plan/index.html" class="nav-link font-medium px-3 py-2">Growth Plan</a>
+            <a href="/raising-capital/index.html" class="nav-link font-medium px-3 py-2">Raising Capital</a>
 
         </div>
 
-        <!-- Nút Menu cho màn hình nhỏ (Mobile) -->
+        <!-- Mobile Menu Button -->
         <div class="md:hidden">
             <button id="menu-btn" class="text-gray-700 focus:outline-none">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
             </button>
         </div>
     </nav>
-
-    <!-- Menu thả xuống cho màn hình nhỏ -->
-    <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
-        <!-- Nội dung menu mobile sẽ được xử lý bằng JavaScript -->
-    </div>
 </header>
-<!-- ===== MASTER NAVIGATION TEMPLATE V3 - END ===== -->
+<!-- ===== MASTER NAVIGATION TEMPLATE V4 - END ===== -->
