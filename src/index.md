@@ -1,6 +1,6 @@
 ---
 title: Droppii Team Hub - Tổng Quan
-layout: layout.html
+layout: layout.njk
 ---
 
 <!-- Dán nội dung HTML của trang Tổng Quan từ Gemini vào đây -->
